@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<portlets>
+
+ <!-- Portlet type registrations -->
+
+ <portlet
+   addview="collective.portlet.group.GroupPortlet"
+   title="Group Portlet"
+   description="A portlet to display member of a group"
+   />
+
+</portlets>
