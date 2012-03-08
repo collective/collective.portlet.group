@@ -4,7 +4,7 @@
     <dt class="portletHeader">
         <span class="portletTopLeft"></span>
         <span tal:content="view/data/group"></span>
-        <a tal:attributes="href view/mailtogroup;"><img src="mail_icon.gif"/></a>
+        <a class="mail-link" tal:attributes="href view/mailtogroup;"><img src="mail_icon.gif"/></a>
         <span class="portletTopRight"></span>
     </dt>
 
@@ -12,7 +12,7 @@
         <ul>
           <li tal:repeat="member view/getMembers">
             <span tal:replace="python:member.getProperty('fullname')"></span>
-            <a tal:attributes="href python:'mailto:'+member.getProperty('email');"><img src="mail_icon.gif"/></a>
+            <a class="mail-link" tal:attributes="href python:'mailto:'+member.getProperty('email');"><img src="mail_icon.gif"/></a>
           </li>
         </ul>
     </dd>
