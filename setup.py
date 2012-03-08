@@ -25,6 +25,7 @@ setup(name='collective.portlet.group',
       zip_safe=False,
       install_requires=[
           'setuptools',
+          'collective.js.datatables',
           # -*- Extra requirements: -*-
       ],
       entry_points="""

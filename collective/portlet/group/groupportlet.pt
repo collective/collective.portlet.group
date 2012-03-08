@@ -3,12 +3,19 @@
 
     <dt class="portletHeader">
         <span class="portletTopLeft"></span>
-        Header
+        <span tal:content="view/data/group"></span>
+        <a tal:attributes="href view/mailtogroup;"><img src="mail_icon.gif"/></a>
         <span class="portletTopRight"></span>
     </dt>
 
     <dd class="portletItem odd">
-        Body text
+        <ul>
+          <li tal:repeat="member view/getMembers">
+            <span class="email" tal:attributes="l python:member.getProperty('email');"></span>
+            <span tal:replace="python:member.getProperty('fullname')"></span>
+            <a tal:attributes="href python:'mailto:'+member.getProperty('email');"><img src="mail_icon.gif"/></a>
+          </li>
+        </ul>
     </dd>
 
     <dd class="portletFooter">

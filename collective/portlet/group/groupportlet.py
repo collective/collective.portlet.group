@@ -3,17 +3,34 @@ from zope.interface import implements
 from plone.portlets.interfaces import IPortletDataProvider
 from plone.app.portlets.portlets import base
 
-# TODO: If you define any fields for the portlet configuration schema below
-# do not forget to uncomment the following import
-#from zope import schema
+from zope import schema
 from zope.formlib import form
 
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile as VPTF
+from collective.portlet.group import GroupPortletMessageFactory as _
 
-# TODO: If you require i18n translation for any of your schema fields below,
-# uncomment the following to import your package MessageFactory
-#from collective.portlet.group import GroupPortletMessageFactory as _
+from zope.app.form.browser.textwidgets import TextWidget
+from Products.CMFCore.utils import getToolByName
 
+class GroupTextWidget(TextWidget):
+
+    def __init__(self, *args):
+        super(GroupTextWidget, self).__init__(*args)
+
+    datatable = VPTF('datatable.pt')
+
+    def __call__(self):
+        return self.datatable()
+
+    def getGroups(self):
+        acl_users = getToolByName(self.context.context, 'acl_users')
+        groups = acl_users.searchGroups()
+        def getGroupInfo(group):
+            return {'id':group['id'],
+                    'title':group['title']
+                    }
+        return [getGroupInfo(group) for group in groups]
 
 class IGroupPortlet(IPortletDataProvider):
     """A portlet
@@ -23,15 +40,9 @@ class IGroupPortlet(IPortletDataProvider):
     same.
     """
 
-    # TODO: Add any zope.schema fields here to capture portlet configuration
-    # information. Alternatively, if there are no settings, leave this as an
-    # empty interface - see also notes around the add form and edit form
-    # below.
-
-    # some_field = schema.TextLine(title=_(u"Some field"),
-    #                              description=_(u"A field to use"),
-    #                              required=True)
-
+    group   = schema.TextLine(title=_(u"Group"),
+                                  description=_(u"Select the group"),
+                                  required=True)
 
 class Assignment(base.Assignment):
     """Portlet assignment.
@@ -41,24 +52,18 @@ class Assignment(base.Assignment):
     """
 
     implements(IGroupPortlet)
+    
+    group = u""
 
-    # TODO: Set default values for the configurable parameters here
-
-    # some_field = u""
-
-    # TODO: Add keyword parameters for configurable parameters here
-    # def __init__(self, some_field=u""):
-    #    self.some_field = some_field
-
-    def __init__(self):
-        pass
+    def __init__(self, group=u""):
+        self.group = group
 
     @property
     def title(self):
         """This property is used to give the title of the portlet in the
         "manage portlets" screen.
         """
-        return "Group Portlet"
+        return "Group "
 
 
 class Renderer(base.Renderer):
@@ -71,6 +76,32 @@ class Renderer(base.Renderer):
 
     render = ViewPageTemplateFile('groupportlet.pt')
 
+    def getMembers(self):
+        """ get the contact informations the portlet is pointing to"""
+        gtool = getToolByName(self.context, 'portal_groups')
+        mtool = getToolByName(self.context, 'portal_membership')
+        groupid = self.data.group
+
+        if not groupid:
+            return ()
+        
+        def getMInfo(m):
+            info = {}
+            member = mtool.getMemberById(m)
+#            info['email'] = member.getProperty("email")
+            return member
+
+        members = [getMInfo(m) for m in gtool.getGroupMembers(groupid)]
+
+        return members
+    
+    def mailtogroup(self):
+        """ return the href with a mailto: all the group members"""
+        
+        members = self.getMembers()
+        emails = [m.getProperty('email') for m in members]
+        return 'mailto:' + ','.join(emails)
+
 
 class AddForm(base.AddForm):
     """Portlet add form.
@@ -80,25 +111,16 @@ class AddForm(base.AddForm):
     constructs the assignment that is being added.
     """
     form_fields = form.Fields(IGroupPortlet)
+    form_fields['group'].custom_widget = GroupTextWidget
+
+    label = _(u"title_add_group_portlet",
+              default=u"Add group portlet")
+
+    def setUpWidgets(self, ignore_request=False):
+        super(AddForm, self).setUpWidgets(ignore_request=ignore_request)
 
     def create(self, data):
         return Assignment(**data)
-
-
-# NOTE: If this portlet does not have any configurable parameters, you
-# can use the next AddForm implementation instead of the previous.
-
-# class AddForm(base.NullAddForm):
-#     """Portlet add form.
-#     """
-#     def create(self):
-#         return Assignment()
-
-
-# NOTE: If this portlet does not have any configurable parameters, you
-# can remove the EditForm class definition and delete the editview
-# attribute from the <plone:portlet /> registration in configure.zcml
-
 
 class EditForm(base.EditForm):
     """Portlet edit form.
@@ -107,3 +129,10 @@ class EditForm(base.EditForm):
     zope.formlib which fields to display.
     """
     form_fields = form.Fields(IGroupPortlet)
+    form_fields['group'].custom_widget = GroupTextWidget
+    
+    label = _(u"title_edit_group_portlet",
+              default=u"Edit group portlet")
+
+    def setUpWidgets(self, ignore_request=False):
+        super(EditForm, self).setUpWidgets(ignore_request=ignore_request)
