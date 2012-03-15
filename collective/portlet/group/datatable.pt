@@ -1,5 +1,3 @@
-<link type="text/css" href="++resource++jquery.datatables/media/css/jquery.dataTables.css" rel="stylesheet">
-
 <tal:table define="groups view/getGroups">
 <table id="group-datatable">
     <thead>
