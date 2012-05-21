@@ -4,4 +4,6 @@ Changelog
 1.0dev (unreleased)
 -------------------
 
-- Initial release
+- When a user is not in a group anymore, just log it without crash [kiorky]
+- Default to userid when no username [kiorky]
+- Multiple fixes for utf8 decode errors [kiorky]
