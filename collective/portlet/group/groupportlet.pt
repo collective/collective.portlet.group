@@ -10,8 +10,12 @@
 
     <dd class="portletItem odd">
         <ul>
-          <li tal:repeat="member view/getMembers">
-            <span tal:replace="python:member.getProperty('fullname')"></span>
+          <li
+            tal:repeat="member view/getMembers">
+            <span
+              tal:define="name python:member.getProperty('fullname');
+              name python:name and name or member.getId;"
+              tal:replace="name"></span>
             <a class="mail-link" tal:attributes="href python:'mailto:'+member.getProperty('email');"><img src="mail_icon.gif"/></a>
           </li>
         </ul>
