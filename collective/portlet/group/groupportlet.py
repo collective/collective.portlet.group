@@ -33,6 +33,15 @@ class GroupTextWidget(TextWidget):
                     }
         return [getGroupInfo(group) for group in groups]
 
+    def normalizeGroupId(self, groupid):
+        ret = groupid
+        try:
+            ret = unicode(ret)
+        except Exception, e:
+            ret = unicode(ret.decode('utf-8'))
+        return ret
+
+
 class IGroupPortlet(IPortletDataProvider):
     """A portlet
 
@@ -98,10 +107,16 @@ class Renderer(base.Renderer):
                 )
             return member
 
+        gmembers = []
+        try:
+            gmembers = gtool.getGroupMembers(groupid)
+        except UnicodeDecodeError:
+            gmembers = gtool.getGroupMembers(
+                groupid.encode('utf-8'))
+
         members = filter(
             lambda x:x is not None,
-            [getMInfo(m)
-             for m in gtool.getGroupMembers(groupid)]
+            [getMInfo(m) for m in gmembers]
         )
 
         return members
