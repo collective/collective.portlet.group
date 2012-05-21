@@ -8,7 +8,9 @@
     </thead>
     <tbody>
         <tr tal:repeat="group groups">
-            <td><input type="radio" tal:attributes="value group/id; name view/name"/></td>
+          <td><input type="radio"
+            tal:attributes="value python:view.normalizeGroupId(group.get('id',''));
+            name view/name"/></td>
             <td tal:content="group/title"></td>
         </tr>
     </tbody>

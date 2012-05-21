@@ -1,3 +1,4 @@
+import logging
 from zope.interface import implements
 
 from plone.portlets.interfaces import IPortletDataProvider
@@ -32,6 +33,15 @@ class GroupTextWidget(TextWidget):
                     }
         return [getGroupInfo(group) for group in groups]
 
+    def normalizeGroupId(self, groupid):
+        ret = groupid
+        try:
+            ret = unicode(ret)
+        except Exception, e:
+            ret = unicode(ret.decode('utf-8'))
+        return ret
+
+
 class IGroupPortlet(IPortletDataProvider):
     """A portlet
 
@@ -52,7 +62,7 @@ class Assignment(base.Assignment):
     """
 
     implements(IGroupPortlet)
-    
+
     group = u""
 
     def __init__(self, group=u""):
@@ -78,26 +88,41 @@ class Renderer(base.Renderer):
 
     def getMembers(self):
         """ get the contact informations the portlet is pointing to"""
+        logger = logging.getLogger('collective.portlet.group.groupportlet.Renderer.getMembers')
         gtool = getToolByName(self.context, 'portal_groups')
         mtool = getToolByName(self.context, 'portal_membership')
         groupid = self.data.group
 
         if not groupid:
             return ()
-        
+
         def getMInfo(m):
             info = {}
             member = mtool.getMemberById(m)
 #            info['email'] = member.getProperty("email")
+            if member is None:
+                logger.warn(
+                    'Memberdata for %s (group: %s)  '
+                    'are unavailable' % (m, groupid)
+                )
             return member
 
-        members = [getMInfo(m) for m in gtool.getGroupMembers(groupid)]
+        gmembers = []
+        try:
+            gmembers = gtool.getGroupMembers(groupid)
+        except UnicodeDecodeError:
+            gmembers = gtool.getGroupMembers(
+                groupid.encode('utf-8'))
+
+        members = filter(
+            lambda x:x is not None,
+            [getMInfo(m) for m in gmembers]
+        )
 
         return members
-    
+
     def mailtogroup(self):
         """ return the href with a mailto: all the group members"""
-        
         members = self.getMembers()
         emails = [m.getProperty('email') for m in members]
         return 'mailto:' + ','.join(emails)
@@ -130,7 +155,7 @@ class EditForm(base.EditForm):
     """
     form_fields = form.Fields(IGroupPortlet)
     form_fields['group'].custom_widget = GroupTextWidget
-    
+
     label = _(u"title_edit_group_portlet",
               default=u"Edit group portlet")
 
