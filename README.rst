@@ -5,7 +5,7 @@ This addon add a new portlet to Plone: Group Portlet. The group portlet let you
 display all members of a group with an mailto link. You have also a mailto link
 for the group that let you contact every members at once.
 
-This addon can run with cynin_.
+This addon is target first for cynin_.
 
 Credits
 =======
@@ -24,7 +24,10 @@ Authors
 
 - JeanMichel FRANCOIS aka toutpt <toutpt@gmail.com>
 
-.. Contributors
+Contributors
+------------
+
+- Mathieu PASQUET <kiorky@cryptelium.net>
 
 .. |makinacom| image:: http://depot.makina-corpus.org/public/logo.gif
 .. _makinacom:  http://www.makina-corpus.com
