@@ -11,10 +11,16 @@ setup(name='collective.portlet.group',
       # Get more strings from
       # http://pypi.python.org/pypi?:action=list_classifiers
       classifiers=[
+        "Environment :: Web Environment",
+        "License :: OSI Approved :: GNU General Public License (GPL)",
+        "Operating System :: OS Independent",
         "Framework :: Plone",
+        "Framework :: Plone :: 4.0",
+        "Framework :: Plone :: 4.1",
+        "Framework :: Plone :: 4.2",
         "Programming Language :: Python",
         ],
-      keywords='plone group datatable cyin',
+      keywords='plone group datatable',
       author='JeanMichel FRANCOIS aka toutpt',
       author_email='toutpt@gmail.com',
       url='https://github.com/collective/collective.portlet.group',

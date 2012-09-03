@@ -18,7 +18,5 @@
 </tal:table>
 
 <script type="text/javascript">
-jq(document).ready(function() {
-    jq('#group-datatable').dataTable();
-} );
+(function($){$('#group-datatable').dataTable({"oLanguage": {"sUrl": "@@collective.js.datatables.translation"}});})(jQuery);
 </script>

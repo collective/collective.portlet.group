@@ -5,6 +5,7 @@
     xmlns:plone="http://namespaces.plone.org/plone"
     i18n_domain="collective.portlet.group">
 
+    <include package="Products.CMFCore" file="permissions.zcml" />
     <five:registerPackage package="." initialize=".initialize" />
 
     <genericsetup:registerProfile
@@ -14,13 +15,6 @@
        description="A portlet to display member of a group"
        provides="Products.GenericSetup.interfaces.EXTENSION"
        />
-
-     <!-- Register the portlet -->
-
-     <!-- If the portlet has no configurable parameters, you can remove
-          the EditForm declaration in groupportlet.py and delete
-          the 'editview' attribute from this statement.
-       -->
 
      <plone:portlet
          name="collective.portlet.group.GroupPortlet"
