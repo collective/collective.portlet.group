@@ -125,7 +125,7 @@ class Renderer(base.Renderer):
         """ return the href with a mailto: all the group members"""
         members = self.getMembers()
         emails = [m.getProperty('email') for m in members]
-        return 'mailto:' + ','.join(emails)
+        return 'mailto:' + ';'.join(emails)
 
 
 class AddForm(base.AddForm):

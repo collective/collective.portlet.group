@@ -1,8 +1,14 @@
 Changelog
 =========
 
-1.0dev (unreleased)
--------------------
+1.1 (unrelesaed)
+----------------
+
+- Fix mailto link for outlook: use ; according to
+  http://support.microsoft.com/kb/820868/en
+
+1.0 (2012-05-23)
+----------------
 
 - When a user is not in a group anymore, just log it without crash [kiorky]
 - Default to userid when no username [kiorky]
