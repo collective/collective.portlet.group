@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '1.1.dev0'
+version = '2.0dev'
 
 setup(name='collective.portlet.group',
       version=version,
